@@ -31,3 +31,13 @@ Each form is represented by a python class.
 
 sqlalchemy supports many rdms including
 	sqllite, mysql, postgresql
+
+
+flask shell
+
+pip install flask-login #for working with user sessions
+
+The flask login extension can work with any user model class regardless of how you implemented it.
+It needs three attributes and one method to be implemented to make it easy.
+The extension provides a useful mixin class that you can add as a base class to your model giving you
+an appropriate implementation for these four elements.
