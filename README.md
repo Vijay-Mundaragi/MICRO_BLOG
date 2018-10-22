@@ -1,11 +1,14 @@
 mkdir Micro_Blog
 cd Micro_Blog
 pip install virtualenv
-virtualenv -p=C:\Users\vmundaragi\AppData\Local\Programs\Python\Python36\python.exe venv
+virtualenv --python=C:\Users\vmundaragi\AppData\Local\Programs\Python\Python36\python.exe venv
 venv\Scripts\activate #activations belong to the terminal session in which you initiated them. for every new terminal you open you need to activate again	
 pip install flask
 set FLASK_APP=micro_blog.py
 pip install flask-sqlalchemy
+
+
+set FLASK_DEBUG=1 #for debug mode
 
 For DB migrations:
 	pip install flask-migrate 	#for database migration (flask-migrate is Alembic framework(tool for transition of schemas from one version to another) extension)

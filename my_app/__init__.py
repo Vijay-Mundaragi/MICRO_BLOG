@@ -6,10 +6,9 @@ from flask_login import LoginManager
 
 app = Flask(__name__)
 app.config.from_object(Config)
-app.debug=True
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'
 
-from my_app import routes, models # to avoid circular dependencies
+from my_app import routes, models, errors # to avoid circular dependencies
