@@ -3,8 +3,8 @@ from my_app import app, db
 from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from flask_login import login_user, current_user, logout_user, login_required
-from my_app.forms import LoginForm, RegistrationForm, EditProfileForm
-from my_app.models import User
+from my_app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm
+from my_app.models import User, Post
 
 
 @app.before_request
@@ -13,21 +13,22 @@ def before_request():
 		current_user.last_seen = datetime.utcnow()
 		db.session.commit()
 
-@app.route("/")
-@app.route("/index")
+@app.route("/", methods=["GET", "POST"])
+@app.route("/index", methods=["GET", "POST"])
 @login_required
 def index():
-	posts = [
-		{
-			"author":{"username": "Harvey Specter"},
-			"body":"I dont play the odds..... I play the man"
-		},
-		{
-			"author":{"username": "Mike Ross"},
-			"body":"You put your interests above mine.... I'm putting them back up next to yours!...Boom!!!"
-		}
-	]
-	return render_template("index.html", title="Home", posts=posts)
+	form = PostForm()
+	if form.validate_on_submit():
+		post = Post(body=form.post.data, author=current_user)
+		db.session.add(post)
+		db.session.commit()
+		flash("Your post is now live...!!!")
+		#bad practice to render a page as a response to post request, 
+		#page refresh from user, will re-submit the form details, hence redirect
+		return redirect(url_for("index"))
+	
+	posts = current_user.followed_posts().all()
+	return render_template("index.html", title="Home", posts=posts, form=form)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
