@@ -24,5 +24,12 @@
 		{% include "_posts.html" %}
 	{% endfor %}
 
+	{% if prev_url %}
+		<a herf="{{ url_for('prev_url') }}"> Newer Posts </a>
+	{% endif %}
+
+	{% if prev_url %}
+		<a herf="{{ url_for('next_url') }}"> Older Posts </a>
+	{% endif %}
 
 {% endblock %}
