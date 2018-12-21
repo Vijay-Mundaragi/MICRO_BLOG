@@ -1,11 +1,12 @@
 from datetime import datetime
-from my_app import app, db
+from my_app import db
+from flask import current_app
 from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from flask_login import login_user, current_user, logout_user, login_required
-from my_app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm
+from my_app.main.forms import  EditProfileForm, PostForm
 from my_app.models import User, Post
-from my_app.email import send_password_reset_email
+
 from my_app.main import bp
 
 
@@ -16,7 +17,7 @@ def before_request():
         db.session.commit()
 
 @bp.route("/", methods=["GET", "POST"])
-@bo.route("/index", methods=["GET", "POST"])
+@bp.route("/index", methods=["GET", "POST"])
 @login_required
 def index():
     form = PostForm()
@@ -30,7 +31,7 @@ def index():
         return redirect(url_for("main.index"))
     
     page = request.args.get("page", 1, type=int)
-    posts = current_user.followed_posts().paginate(page, app.config["POSTS_PER_PAGE"], False) #returns paginate object
+    posts = current_user.followed_posts().paginate(page, current_app.config["POSTS_PER_PAGE"], False) #returns paginate object
     next_url = url_for("main.index", page=posts.next_num) if posts.has_next else None
     prev_url = url_for("main.index", page=posts.prev_num) if posts.has_prev else None
     return render_template("index.html", title="Home", posts=posts.items, form=form, next_url=next_url, prev_url=prev_url)
@@ -39,7 +40,7 @@ def index():
 @login_required
 def explore():
     page = request.args.get("page", 1, type=int)
-    posts = Post.query.order_by(Post.timestamp.desc()).paginate(page, app.config["POSTS_PER_PAGE"], False) #returns paginate object
+    posts = Post.query.order_by(Post.timestamp.desc()).paginate(page, current_app.config["POSTS_PER_PAGE"], False) #returns paginate object
     next_url = url_for("main.explore", page=posts.next_num) if posts.has_next else None
     prev_url = url_for("main.explore", page=posts.prev_num) if posts.has_prev else None
     return render_template("index.html", title="Explore", posts=posts.items, next_url=next_url, prev_url=prev_url)
@@ -50,7 +51,7 @@ def explore():
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get("page", 1 , type=int)
-    posts = user.posts.order_by(Post.timestamp.desc()).paginate(page, app.config["POSTS_PER_PAGE"], False)
+    posts = user.posts.order_by(Post.timestamp.desc()).paginate(page, current_app.config["POSTS_PER_PAGE"], False)
     next_url = url_for("main.index", page=posts.next_num) if posts.has_next else None
     prev_url = url_for("main.index", page=posts.prev_num) if posts.has_prev else None
     return render_template("user.html",user=user,posts=posts.items, next_url=next_url, prev_url=prev_url)

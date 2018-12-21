@@ -1,11 +1,11 @@
 from datetime import datetime
-from my_app import app, db
+from my_app import db
 from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from flask_login import login_user, current_user, logout_user, login_required
-from my_app.forms import LoginForm, RegistrationForm, EditProfileForm, PostForm, ResetPasswordRequestForm, ResetPasswordForm
+from my_app.auth.forms import LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm
 from my_app.models import User, Post
-from my_app.email import send_password_reset_email
+from my_app.auth.email import send_password_reset_email
 from my_app.auth import bp
 
 
